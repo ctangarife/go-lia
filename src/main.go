@@ -21,6 +21,10 @@ type Menu struct {
 	Items []interface{}
 }
 
+type Child struct {
+	Children []Children
+}
+
 type Category struct {
 	Name        string
 	Description string
@@ -38,11 +42,19 @@ type Product struct {
 	Type            string
 	SortingPosition int
 	ImageUrl        string
+	Children        []Children
 }
 
 type Children struct {
-	Product  Product
-	Category Category
+	Category        Category
+	Name            string
+	Description     string
+	Sku             string
+	Price           string
+	Stock           string
+	Type            string
+	SortingPosition int
+	MaxLimit        int
 }
 
 func writeToFile(f *os.File, word string) {
@@ -67,14 +79,29 @@ func liaSearch(lia Menu, c chan string, wg *sync.WaitGroup) {
 		wg.Add(1)
 		var result Product
 		transcode(collar[i], &result)
-		//fmt.Printf("%+v\n", result)
+
+		//fmt.Printf("%+v\n", result.Children)
 		nameLen := len(result.Name)
 		DescLen := len(result.Description)
 		CatNameLen := len(result.Category.Name)
 		CatDescLen := len(result.Category.Description)
 
-		if nameLen > 1 || DescLen > 1 || CatNameLen > 1 || CatDescLen > 1 {
-			c <- result.Sku
+		if nameLen > 39 || DescLen > 179 || CatNameLen > 30 || CatDescLen > 179 {
+			long := fmt.Sprintf("NameLen: %d, DescLen: %d, CatNameLen : %d, CatDescLen: %d, SKU: %s ", nameLen, DescLen, CatNameLen, CatDescLen, result.Sku)
+			c <- long
+		}
+
+		for x := range result.Children {
+
+			//fmt.Println(result.Children[x].Name)
+			//fmt.Println(val)
+			nameChildLen := len(result.Children[x].Name)
+			CatNameChildLen := len(result.Children[x].Category.Name)
+			if nameChildLen > 39 || CatNameChildLen > 39 {
+				skuC := "SKUP:" + result.Sku + " SKUC:" + result.Children[x].Sku
+				longC := fmt.Sprintf("NameLen: %d,CatNameLen : %d, SKU: %s ", nameChildLen, CatNameChildLen, skuC)
+				c <- longC
+			}
 		}
 
 	}
@@ -94,8 +121,22 @@ func liaTail(lia Menu, ch chan string, wg *sync.WaitGroup) {
 		CatNameLen := len(result.Category.Name)
 		CatDescLen := len(result.Category.Description)
 
-		if nameLen > 1 || DescLen > 1 || CatNameLen > 1 || CatDescLen > 1 {
-			ch <- result.Sku
+		if nameLen > 39 || DescLen > 179 || CatNameLen > 30 || CatDescLen > 179 {
+			long := fmt.Sprintf("NameLen: %d, DescLen: %d, CatNameLen : %d, CatDescLen: %d, SKU: %s ", nameLen, DescLen, CatNameLen, CatDescLen, result.Sku)
+			ch <- long
+		}
+
+		for x := range result.Children {
+
+			//fmt.Println(result.Children[x].Name)
+			//fmt.Println(val)
+			nameChildLen := len(result.Children[x].Name)
+			CatNameChildLen := len(result.Children[x].Category.Name)
+			if nameChildLen > 39 || CatNameChildLen > 39 {
+				skuC := "SKUP:" + result.Sku + " SKUC:" + result.Children[x].Sku
+				longC := fmt.Sprintf("NameLen: %d, CatNameLen : %d, SKU: %s ", nameChildLen, CatNameChildLen, skuC)
+				ch <- longC
+			}
 		}
 
 	}
@@ -107,8 +148,8 @@ func showChannel(ch chan string, name string) {
 	namefileext := "./tmp/s" + namefile + ".txt"
 	jsonErr, _ := os.Create(namefileext)
 	for message := range ch {
-		sku := fmt.Sprintf("Sku donde se infringe la regla de longitud: %s", message)
-		fmt.Println(sku)
+		sku := message
+		//fmt.Println(sku)
 		writeToFile(jsonErr, sku)
 
 	}
@@ -117,7 +158,7 @@ func showChannel(ch chan string, name string) {
 func main() {
 	fmt.Println("Inicio de ejecución")
 	jsonFile, err := os.Open("./tmp/menu.json")
-	jsonFileFull, err := os.Open("./tmp/menu_full.json")
+	jsonFileFull, err := os.Open("./tmp/menu_text.json")
 
 	isError(err)
 	fmt.Println("Ingresando al archivo de Menú para revisión")
@@ -131,7 +172,7 @@ func main() {
 	c := make(chan string)
 	ch := make(chan string)
 	var wg sync.WaitGroup
-	wg.Add(15)
+	wg.Add(2)
 	go liaSearch(result, c, &wg)
 	go liaTail(resultFull, ch, &wg)
 	go showChannel(c, "menu")
@@ -139,6 +180,7 @@ func main() {
 	defer func() {
 		wg.Wait()
 		close(c)
+		close(ch)
 		wg.Done()
 		jsonFile.Close()
 		jsonFileFull.Close()
