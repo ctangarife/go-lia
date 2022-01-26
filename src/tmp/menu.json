@@ -1,0 +1,43 @@
+{
+  "storeId": "900113096",
+  "items": [
+    {
+      "category": {
+        "id": "25-1651-Rappi-A LA PARRILLA",
+        "maxQty": 0,
+        "minQty": 0,
+        "name": "A la parrilla",
+        "description": "Cuenta con una carne de res a la parrilla de 198g, queso americano, tomates, lechuga, cebollas y mayonesa sobre un pan de maíz. En combo con bebida y papas medianas",
+        "sortingPosition": 0
+      },
+      "imageUrl": "https://cdn.inoutdelivery.com/burgerking.inoutdelivery.com/md/1625782352913-Mesa%20de%20trabajo%2061pideen%20linea.png",
+      "name": "Combo Bacon King",
+      "price": 29900,
+      "description": "2 carnes 113 g C/u de res a la parrilla, tocineta crujiente, queso americano, pan con ajonjolí. En combo con bebida y papas medianas",
+      "rappiIds": [],
+      "sku": "151-2377-80020515-PG-S",
+      "stock": "AVAILABLE",
+      "sortingPosition": 1,
+      "type": "PRODUCT"
+    },
+    {
+      "category": {
+        "id": "25-1651-Rappi-A LA PARRILLA",
+        "maxQty": 0,
+        "minQty": 0,
+        "name": "A la parrilla",
+        "description": "Cuenta con una carne de res a la parrilla de 198g, queso americano, tomates, lechuga, cebollas y mayonesa sobre un pan de maíz. En combo con bebida y papas medianas",
+        "sortingPosition": 0
+      },
+      "imageUrl": "https://cdn.inoutdelivery.com/burgerking.inoutdelivery.com/md/1634302715327-WhatsApp%20Image%202021-10-15%20at%207.58.24%20AM.jpeg",
+      "name": "Combo  Guacamole Crunch King",
+      "price": 29900,
+      "description": "Son 2 carne de res 113g C/u a la parrilla, guacamole, lechuga, pepinillos, queso, tocineta y cebollitas crujientes. En combo con bebida y papas medianas.",
+      "rappiIds": [],
+      "sku": "149-2559-80023660-PG-S",
+      "stock": "AVAILABLE",
+      "sortingPosition": 1,
+      "type": "PRODUCT"
+    }
+  ]
+}
